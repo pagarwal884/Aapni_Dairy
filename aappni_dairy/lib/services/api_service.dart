@@ -5,7 +5,7 @@ import '../models/milk_entry.dart';
 import '../models/customer.dart';
 
 class ApiService {
-  static const String _baseUrl = 'http://10.37.7.47:5000';
+  static const String _baseUrl = 'https://aapni-dairy.onrender.com';
 
   // ================= AUTH TOKEN =================
   Future<String?> _getToken() async {
