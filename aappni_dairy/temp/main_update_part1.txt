@@ -1,0 +1,85 @@
+WidgetsFlutterBinding.ensureInitialized();
+
+  // Set up global error handler
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    print('Caught Flutter Error: ${details.exception}');
+    print('Stack trace: ${details.stack}');
+  };
+
+  // Initialize Firebase
+  try {
+    await FirebaseService().initialize();
+    print('Firebase initialized successfully');
+  } catch (e) {
+    print('Error initializing Firebase: $e');
+    // For debugging, rethrow to see the error
+    rethrow;
+  }
+
+  try {
+    if (!kIsWeb) {
+      await Constants.loadRates();
+    }
+    await Constants.loadDairyDetails();
+    print('Constants loaded successfully');
+  } catch (e) {
+    print('Error during initialization: $e');
+    // For debugging, rethrow to see the error
+    rethrow;
+  }
+  // Enable offline data
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+  );
+
+  runApp(const MyApp());
+}
+=======
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Set up global error handler
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    print('Caught Flutter Error: ${details.exception}');
+    print('Stack trace: ${details.stack}');
+  };
+
+  bool firebaseInitialized = false;
+  String? initError;
+
+  // Initialize Firebase and other constants with error handling
+  try {
+    await FirebaseService().initialize();
+    firebaseInitialized = true;
+    print('Firebase initialized successfully');
+  } catch (e) {
+    initError = 'Error initializing Firebase: $e';
+    print(initError);
+  }
+
+  try {
+    if (!kIsWeb) {
+      await Constants.loadRates();
+    }
+    await Constants.loadDairyDetails();
+    print('Constants loaded successfully');
+  } catch (e) {
+    final err = 'Error during initialization: $e';
+    print(err);
+    if (initError == null) {
+      initError = err;
+    } else {
+      initError += '\n$err';
+    }
+  }
+
+  if (firebaseInitialized) {
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+    );
+  }
+
+  runApp(MyAppWrapper(firebaseInitialized: firebaseInitialized, initError: initError));
+}
