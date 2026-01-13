@@ -83,7 +83,6 @@ customerSchema.pre("validate", async function (next) {
   );
 
   this.c_id = updatedCounter.value;
-  next();
 });
 
 const Customer =
