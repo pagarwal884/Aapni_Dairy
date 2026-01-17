@@ -5,8 +5,17 @@ import connectDB from './config/mongoDB.js';
 import userRouter from './routes/userRoutes.js';
 import customerRouter from './routes/customerRoutes.js';
 import entryRoute from './routes/entryRouting.js';
+import "../Backend/keepAwake/keepAwake.js"
 const app = express();
 const port = process.env.PORT || 5000;
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // middleware
 app.use(express.json());   
